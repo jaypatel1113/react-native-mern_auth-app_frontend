@@ -73,7 +73,9 @@ const ImageUpload = (props) => {
                         </Text>
                     )}
                 </TouchableOpacity>
-                <Text style={styles.skip}>Skip</Text>
+                <TouchableOpacity onPress={()=>props.navigation.dispatch(StackActions.replace("UserProfile"))}>
+                    <Text style={styles.skip}>Skip</Text>
+                </TouchableOpacity>
                 {profileImage ? (
                     <Text
                         onPress={uploadProfileImage}
