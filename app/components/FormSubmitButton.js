@@ -3,8 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 const FormSubmitButton = ({ title, submitting, onPress }) => {
     const backgroundColor = submitting
-        ? "rgba(27,27,51,0.4)"
-        : "rgba(27,27,51,1)";
+        ? "rgba(25,39,52,0.4)"
+        : "rgba(25,39,52,1)";
 
     return (
         <TouchableOpacity
