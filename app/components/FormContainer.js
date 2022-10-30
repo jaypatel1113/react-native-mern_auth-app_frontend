@@ -5,16 +5,20 @@ import {
     Dimensions,
     KeyboardAvoidingView,
     Platform,
+    ScrollView,
 } from "react-native";
 
 const FormContainer = ({ children }) => {
     return (
         <KeyboardAvoidingView
             enabled
-            behavior={Platform.OS === "ios" ? "padding" : null}
+            showsVerticalScrollIndicator={false}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            {children}
+            <ScrollView>
+                <View>{children}</View>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 };

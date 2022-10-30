@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
     createDrawerNavigator,
@@ -9,11 +9,30 @@ import {
 import Home from "./components/Home";
 import Tasks from "./components/Tasks";
 import { useLogin } from "./context/LoginProvider";
+import { logout } from "./utils/auth";
+import { updateError } from "./utils/methods";
+import client from "./api/client";
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = (props) => {
-    const { setIsLoggedIn, profile } = useLogin();
+    const [type, setType] = useState('');
+    const [text, setText] = useState('');
+    const { setIsLoggedIn, profile, setProfile, setLoading } = useLogin();
+
+    const handleLogout = async () => {
+        setLoading(true);
+        const isLoggedOut = await logout()
+        if(isLoggedOut) {
+            setLoading(false);
+            setProfile({});
+            setIsLoggedIn(false);
+        } else {
+            setLoading(false);
+            console.log("something went wrong");
+        }
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
@@ -51,7 +70,7 @@ const CustomDrawer = (props) => {
                     backgroundColor: "#f6f6f6",
                     padding: 20,
                 }}
-                onPress={() => setIsLoggedIn(false)}
+                onPress={handleLogout}
             >
                 <Text>Log Out</Text>
             </TouchableOpacity>

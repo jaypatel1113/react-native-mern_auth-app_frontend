@@ -1,41 +1,36 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
-
-import { isValidEmail, isValidObjField, updateError } from "../utils/methods";
+import client from "../api/client";
+import {
+    isValidEmail,
+    isValidObjField,
+    navigateToForgetPassword,
+    navigateToLogin,
+    updateError,
+} from "../utils/methods";
+import { StackActions } from "@react-navigation/native";
+import AppForm from "./AppForm";
+import BottomLinks from "./BottomLinks";
 import FormContainer from "./FormContainer";
 import FormInput from "./FormInput";
 import FormSubmitButton from "./FormSubmitButton";
-import { StackActions } from "@react-navigation/native";
-
-import { Formik } from "formik";
-import * as Yup from "yup";
-
-import client from "../api/client";
-
-const validationSchema = Yup.object({
-    fullname: Yup.string()
-        .trim()
-        .min(3, "Invalid name!")
-        .required("Name is required!"),
-    email: Yup.string().email("Invalid email!").required("Email is required!"),
-    password: Yup.string()
-        .trim()
-        .min(8, "Password is too short!")
-        .required("Password is required!"),
-    confirmPassword: Yup.string()
-        .required("Confirm Password is required!")
-        .equals([Yup.ref("password"), null], "Password does not match!"),
-});
+import Heading from "./Heading";
+import { signInWithAsync, signup } from "../utils/auth";
+import AppNotification from "./AppNotification";
+import { useLogin } from "../context/LoginProvider";
 
 const SignupForm = ({ navigation }) => {
-    const userInfo = {
-        fullname: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    };
+    const [userInfo, setUserInfo] = useState({
+        fullname: "jay patel",
+        email: "jay734883@gmail.com",
+        password: "12345678",
+        confirmPassword: "12345678",
+    });
 
-    const [error, setError] = useState("");
+    const [type, setType] = useState('');
+    const [text, setText] = useState('');
+    const {setLoading} = useLogin();
+    // const [msg, setMsg] = useState({type: '', text: ''});
 
     const { fullname, email, password, confirmPassword } = userInfo;
 
@@ -46,123 +41,120 @@ const SignupForm = ({ navigation }) => {
     const isValidForm = () => {
         // we will accept only if all of the fields have value
         if (!isValidObjField(userInfo))
-            return updateError("Required all fields!", setError);
+            return updateError("Fill all fields!", setText, "error", setType);
         // if valid name with 3 or more characters
         if (!fullname.trim() || fullname.length < 3)
-            return updateError("Invalid name!", setError);
+            return updateError("Invalid name!", setText, "error", setType);
         // only valid email id is allowed
         if (!isValidEmail(email))
-            return updateError("Invalid email!", setError);
+            return updateError("Invalid email!", setText, "error", setType);
         // password must have 8 or more characters
         if (!password.trim() || password.length < 8)
-            return updateError("Password is less then 8 characters!", setError);
+            return updateError("Password is less then 8 characters!", setText, "error", setType);
         // password and confirm password must be the same
         if (password !== confirmPassword)
-            return updateError("Password does not match!", setError);
+            return updateError("Password does not match!", setText, "error", setType);
 
         return true;
     };
 
-    const sumbitForm = () => {
+    const sumbitForm = async () => {
         if (isValidForm()) {
+            setLoading(true);
             // submit form
-            console.log(userInfo);
-        }
-    };
-
-    const signUp = async (values, formikActions) => {
-        const res = await client.post("/create-user", {
-            ...values,
-        });
-
-        if (res.data.success) {
-            const signInRes = await client.post("/sign-in", {
-                email: values.email,
-                password: values.password,
-            });
-            if (signInRes.data.success) {
-                navigation.dispatch(
-                    StackActions.replace("ImageUpload", {
-                        token: signInRes.data.token,
-                    })
-                );
+            const result = await signup(userInfo);
+            if(!result.success) {
+                setLoading(false);
+                return updateError(result.message, setText, "error", setType);
             }
-        }
-
-        formikActions.resetForm();
-        formikActions.setSubmitting(false);
-    };
-
-    return (
-        <FormContainer>
-            <Formik
-                initialValues={userInfo}
-                validationSchema={validationSchema}
-                onSubmit={signUp}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    isSubmitting,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                }) => {
-                    const { fullname, email, password, confirmPassword } =
-                        values;
-                    return (
-                        <>
-                            <FormInput
-                                value={fullname}
-                                error={touched.fullname && errors.fullname}
-                                onChangeText={handleChange("fullname")}
-                                onBlur={handleBlur("fullname")}
-                                label="Full Name"
-                                placeholder="John Smith"
-                            />
-                            <FormInput
-                                value={email}
-                                error={touched.email && errors.email}
-                                onChangeText={handleChange("email")}
-                                onBlur={handleBlur("email")}
-                                autoCapitalize="none"
-                                label="Email"
-                                placeholder="example@email.com"
-                            />
-                            <FormInput
-                                value={password}
-                                error={touched.password && errors.password}
-                                onChangeText={handleChange("password")}
-                                onBlur={handleBlur("password")}
-                                autoCapitalize="none"
-                                secureTextEntry
-                                label="Password"
-                                placeholder="********"
-                            />
-                            <FormInput
-                                value={confirmPassword}
-                                error={
-                                    touched.confirmPassword &&
-                                    errors.confirmPassword
-                                }
-                                onChangeText={handleChange("confirmPassword")}
-                                onBlur={handleBlur("confirmPassword")}
-                                autoCapitalize="none"
-                                secureTextEntry
-                                label="Confirm Password"
-                                placeholder="********"
-                            />
-                            <FormSubmitButton
-                                submitting={isSubmitting}
-                                onPress={handleSubmit}
-                                title="Sign up"
-                            />
-                        </>
-                    );
-                }}
-            </Formik>
-        </FormContainer>
+            // if(!result.success) return setMsg({type: 'error', text: result.message})
+            
+            if (result.success) {
+                setLoading(true);
+                const signInRes = await signInWithAsync(userInfo.email, userInfo.password)
+                if (signInRes.success) {
+                    setLoading(false);
+                    navigation.dispatch(
+                        // StackActions.replace("ImageUpload", {
+                            //     token: signInRes.data.token,
+                            // })
+                            StackActions.replace("Verification", {profile: result.newUser})
+                            );
+                        }
+                    }
+                }
+                setLoading(false);
+            };
+            return (
+        <>
+            <AppForm />
+            <FormContainer>
+                <View
+                    style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 20,
+                    }}
+                >
+                    <Heading title="Register" />
+                </View>
+                {/* {error ? (
+                    <Text
+                        style={{
+                            color: "red",
+                            fontSize: 18,
+                            textAlign: "center",
+                        }}
+                    >
+                        {error}
+                    </Text>
+                ) : null} */}
+                {text ? <AppNotification type={type} text={text} /> : null}
+                <FormInput
+                    value={fullname}
+                    onChangeText={(value) =>
+                        handleOnChangeText(value, "fullname")
+                    }
+                    label="Full Name"
+                    placeholder="John Doew"
+                    autoCapitalize="none"
+                />
+                <FormInput
+                    value={email}
+                    onChangeText={(value) => handleOnChangeText(value, "email")}
+                    label="Email"
+                    placeholder="example@email.com"
+                    autoCapitalize="none"
+                />
+                <FormInput
+                    value={password}
+                    onChangeText={(value) =>
+                        handleOnChangeText(value, "password")
+                    }
+                    label="Password"
+                    placeholder="********"
+                    autoCapitalize="none"
+                    secureTextEntry
+                />
+                <FormInput
+                    value={confirmPassword}
+                    onChangeText={(value) =>
+                        handleOnChangeText(value, "confirmPassword")
+                    }
+                    label="Password"
+                    placeholder="********"
+                    autoCapitalize="none"
+                    secureTextEntry
+                />
+                <FormSubmitButton onPress={sumbitForm} title="Sign UP" />
+                <BottomLinks
+                    leftPress={() => navigateToLogin(navigation)}
+                    rightPress={() => navigateToForgetPassword(navigation)}
+                    leftText={"Sign IN"}
+                    rightText="Forget Password?"
+                />
+            </FormContainer>
+        </>
     );
 };
 

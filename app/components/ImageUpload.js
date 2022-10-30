@@ -4,8 +4,10 @@ import * as ImagePicker from "expo-image-picker";
 import { StackActions } from "@react-navigation/native";
 
 import client from "../api/client";
+import { useLogin } from "../context/LoginProvider";
 
 const ImageUpload = (props) => {
+    const { setIsLoggedIn, profile, setLoading } = useLogin();
     const [profileImage, setProfileImage] = useState("");
     const [progress, setProgress] = useState(0);
     const { token } = props.route.params;
@@ -37,7 +39,7 @@ const ImageUpload = (props) => {
             uri: profileImage,
             type: "image/jpg",
         });
-
+        setLoading(true);
         try {
             const res = await client.post("/upload-profile", formData, {
                 headers: {
@@ -48,9 +50,13 @@ const ImageUpload = (props) => {
             });
 
             if (res.data.success) {
+                setIsLoggedIn(true);
+                setLoading(false);
+                
                 props.navigation.dispatch(StackActions.replace("UserProfile"));
             }
         } catch (error) {
+            setLoading(false);
             console.log(error.message);
         }
     };
