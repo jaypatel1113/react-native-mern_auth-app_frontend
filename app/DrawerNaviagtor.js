@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
     createDrawerNavigator,
@@ -7,17 +7,15 @@ import {
 } from "@react-navigation/drawer";
 
 import Home from "./components/Home";
-import Tasks from "./components/Tasks";
+import LoginActivity from "./components/LoginActivity";
 import { useLogin } from "./context/LoginProvider";
 import { logout } from "./utils/auth";
-import { updateError } from "./utils/methods";
-import client from "./api/client";
+import { navigateToLogin } from "./utils/methods";
+import { useNavigation } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = (props) => {
-    const [type, setType] = useState('');
-    const [text, setText] = useState('');
     const { setIsLoggedIn, profile, setProfile, setLoading } = useLogin();
 
     const handleLogout = async () => {
@@ -93,7 +91,7 @@ const DrawerNavigator = () => {
             drawerContent={(props) => <CustomDrawer {...props} />}
         >
             <Drawer.Screen component={Home} name="Home" />
-            <Drawer.Screen component={Tasks} name="Tasks" />
+            <Drawer.Screen component={LoginActivity} name="Login Activity" />
         </Drawer.Navigator>
     );
 };

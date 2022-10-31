@@ -32,6 +32,13 @@ const ImageUpload = (props) => {
         }
     };
 
+    const dispatchHome = () => {
+        setIsLoggedIn(true);
+        setLoading(false);
+        
+        props.navigation.dispatch(StackActions.replace("UserProfile"));
+    }
+
     const uploadProfileImage = async () => {
         const formData = new FormData();
         formData.append("profile", {
@@ -50,10 +57,7 @@ const ImageUpload = (props) => {
             });
 
             if (res.data.success) {
-                setIsLoggedIn(true);
-                setLoading(false);
-                
-                props.navigation.dispatch(StackActions.replace("UserProfile"));
+                dispatchHome();
             }
         } catch (error) {
             setLoading(false);
@@ -79,7 +83,7 @@ const ImageUpload = (props) => {
                         </Text>
                     )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=>props.navigation.dispatch(StackActions.replace("UserProfile"))}>
+                <TouchableOpacity onPress={dispatchHome}>
                     <Text style={styles.skip}>Skip</Text>
                 </TouchableOpacity>
                 {profileImage ? (
@@ -91,6 +95,7 @@ const ImageUpload = (props) => {
                                 backgroundColor: "green",
                                 color: "white",
                                 borderRadius: 8,
+                                opacity: 1,
                             },
                         ]}
                     >
