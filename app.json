@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "fullstack-authentication-app",
+    "name": "FullStack Authentication App",
     "slug": "fullstack-authentication-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -28,6 +28,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "599d94b5-fdc9-4169-9bea-e9a4e361cda1"
+      }
     }
   }
 }
