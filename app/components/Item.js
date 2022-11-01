@@ -2,7 +2,6 @@ import { Dimensions, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 const Item = ({ time }) => {
-    
     const formatedate = (ms) => {
         const intMs = parseInt(ms);
         // console.log(ms);
@@ -31,7 +30,6 @@ const Item = ({ time }) => {
     );
 };
 
-export default Item;
 
 const styles = StyleSheet.create({
     item: {
@@ -45,6 +43,8 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: "center",
-        fontWeight: "400",
+        fontWeight: "500",
     },
 });
+
+export default Item;

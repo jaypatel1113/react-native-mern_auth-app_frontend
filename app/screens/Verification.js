@@ -10,17 +10,18 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Entypo } from "@expo/vector-icons";
+import { StackActions } from "@react-navigation/native";
+
 import { isValidObjField, updateError } from "../utils/methods";
 import { signin, verifycode } from "../utils/auth";
-import AppNotification from "./AppNotification";
-import { StackActions } from "@react-navigation/native";
-import client from "../api/client";
 import { useLogin } from "../context/LoginProvider";
+
+import AppNotification from "../components/AppNotification";
 
 const Verification = ({ route, navigation }) => {
     const [type, setType] = useState("");
     const [text, setText] = useState("");
-    const {setLoading} = useLogin();
+    const { setLoading } = useLogin();
 
     const { profile } = route.params;
 
@@ -75,9 +76,9 @@ const Verification = ({ route, navigation }) => {
                         StackActions.replace("ImageUpload", {
                             token: signInRes.token,
                         })
-                        );
-                    }
-                } else {
+                    );
+                }
+            } else {
                 setLoading(false);
                 return updateError(res.message, setText, "error", setType);
             }
@@ -132,7 +133,6 @@ const Verification = ({ route, navigation }) => {
     );
 };
 
-export default Verification;
 
 const { width } = Dimensions.get("window");
 const inputWidth = Math.round(width / 6);
@@ -184,3 +184,5 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
 });
+
+export default Verification;

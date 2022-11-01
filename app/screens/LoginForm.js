@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, Pressable } from "react-native";
-import client from "../api/client";
-import { useLogin } from "../context/LoginProvider";
-import { signin, signInWithAsync, signup } from "../utils/auth";
+import { View, StyleSheet } from "react-native";
+
 import {
     isValidEmail,
     isValidObjField,
@@ -10,13 +8,16 @@ import {
     navigateToRegister,
     updateError,
 } from "../utils/methods";
-import AppForm from "./AppForm";
-import AppNotification from "./AppNotification";
-import BottomLinks from "./BottomLinks";
-import FormContainer from "./FormContainer";
-import FormInput from "./FormInput";
-import FormSubmitButton from "./FormSubmitButton";
-import Heading from "./Heading";
+import { useLogin } from "../context/LoginProvider";
+import { signInWithAsync } from "../utils/auth";
+
+import AppForm from "../components/AppForm";
+import AppNotification from "../components/AppNotification";
+import BottomLinks from "../components/BottomLinks";
+import FormContainer from "../components/FormContainer";
+import FormInput from "../components/FormInput";
+import FormSubmitButton from "../components/FormSubmitButton";
+import Heading from "../components/Heading";
 
 const LoginForm = ({ navigation }) => {
     const { setIsLoggedIn, setProfile, setLoading } = useLogin();
@@ -25,8 +26,8 @@ const LoginForm = ({ navigation }) => {
         password: "",
     });
 
-    const [type, setType] = useState('');
-    const [text, setText] = useState('');
+    const [type, setType] = useState("");
+    const [text, setText] = useState("");
 
     const { email, password } = userInfo;
 
@@ -42,7 +43,12 @@ const LoginForm = ({ navigation }) => {
             return updateError("Invalid Email!", setText, "error", setType);
 
         if (!password.trim() || password.length < 8)
-            return updateError("Password is less then 8 characters!", setText, "error", setType);
+            return updateError(
+                "Password is less then 8 characters!",
+                setText,
+                "error",
+                setType
+            );
 
         return true;
     };
@@ -50,17 +56,26 @@ const LoginForm = ({ navigation }) => {
     const submitForm = async () => {
         if (isValidForm()) {
             setLoading(true);
-            const res = await signInWithAsync(userInfo.email, userInfo.password);
-            
-            if(!res.success) {
+            const res = await signInWithAsync(
+                userInfo.email,
+                userInfo.password
+            );
+
+            if (!res.success) {
                 setLoading(false);
-                return updateError(res.message, setText, "error", setType, setIsLoggedIn);
-            } 
-            
+                return updateError(
+                    res.message,
+                    setText,
+                    "error",
+                    setType,
+                    setIsLoggedIn
+                );
+            }
+
             if (res.success) {
                 setUserInfo({ email: "", password: "" });
                 // console.log(res);
-                const newProfile = {token: res.token, user: res.user}
+                const newProfile = { token: res.token, user: res.user };
                 setProfile(newProfile);
                 setIsLoggedIn(true);
             }
@@ -71,7 +86,7 @@ const LoginForm = ({ navigation }) => {
 
     return (
         <>
-            <AppForm />
+            <AppForm login={true} />
             <FormContainer>
                 <View
                     style={{

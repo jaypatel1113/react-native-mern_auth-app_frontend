@@ -1,4 +1,5 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from "react-native";
+
 import client from "../api/client";
 
 const catchError = (error) => {
@@ -53,21 +54,20 @@ export const verifycode = async (otp, id) => {
 export const logout = async (token) => {
     try {
         const token = await AsyncStorage.getItem("token");
-        
-        if(token !== null) {
 
+        if (token !== null) {
             const { data } = await client.get("/sign-out", {
                 headers: {
                     // Accept: "application/json",
                     authorization: `JWT ${token}`,
-                }
+                },
             });
-            if(data.success) {
+            if (data.success) {
                 await AsyncStorage.removeItem("token");
-                return true
+                return true;
             }
         }
-        return false
+        return false;
     } catch (error) {
         catchError(error);
         return false;
@@ -78,7 +78,7 @@ export const signInWithAsync = async (email, password) => {
     try {
         // console.log(email, password);
         const { data } = await client.post("/sign-in", { email, password });
-        if(data.success) {
+        if (data.success) {
             const token = data.token;
             const res = await AsyncStorage.setItem("token", token);
         }
@@ -86,5 +86,4 @@ export const signInWithAsync = async (email, password) => {
     } catch (error) {
         return catchError(error);
     }
-    
-}
+};

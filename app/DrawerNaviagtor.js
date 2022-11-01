@@ -6,12 +6,12 @@ import {
     DrawerItemList,
 } from "@react-navigation/drawer";
 
-import Home from "./components/Home";
-import LoginActivity from "./components/LoginActivity";
 import { useLogin } from "./context/LoginProvider";
 import { logout } from "./utils/auth";
-import { navigateToLogin } from "./utils/methods";
-import { useNavigation } from "@react-navigation/native";
+
+import Home from "./screens/Home";
+import LoginActivity from "./screens/LoginActivity";
+import CreatedAt from "./screens/CreatedAt";
 
 const Drawer = createDrawerNavigator();
 
@@ -20,16 +20,16 @@ const CustomDrawer = (props) => {
 
     const handleLogout = async () => {
         setLoading(true);
-        const isLoggedOut = await logout()
-        if(isLoggedOut) {
-            setLoading(false);
+        const isLoggedOut = await logout();
+        if (isLoggedOut) {
             setProfile({});
             setIsLoggedIn(false);
-        } else {
             setLoading(false);
+        } else {
             console.log("something went wrong");
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -40,7 +40,8 @@ const CustomDrawer = (props) => {
                         justifyContent: "space-between",
                         alignItems: "center",
                         padding: 20,
-                        backgroundColor: "#f6f6f6",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#aaa",
                         marginBottom: 20,
                     }}
                 >
@@ -52,7 +53,7 @@ const CustomDrawer = (props) => {
                         source={{
                             uri:
                                 profile.avatar ||
-                                "https://images.unsplash.com/photo-1624243225303-261cc3cd2fbc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+                                "https://static.thenounproject.com/png/363640-200.png",
                         }}
                         style={{ width: 60, height: 60, borderRadius: 30 }}
                     />
@@ -65,12 +66,21 @@ const CustomDrawer = (props) => {
                     right: 0,
                     left: 0,
                     bottom: 50,
-                    backgroundColor: "#f6f6f6",
+                    backgroundColor: "#ddd",
+                    marginHorizontal: 15,
+                    borderRadius: 30,
                     padding: 20,
                 }}
                 onPress={handleLogout}
             >
-                <Text>Log Out</Text>
+                <Text
+                    style={{
+                        fontWeight: "600",
+                        textAlign: "center",
+                    }}
+                >
+                    LOG OUT
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -91,6 +101,7 @@ const DrawerNavigator = () => {
             drawerContent={(props) => <CustomDrawer {...props} />}
         >
             <Drawer.Screen component={Home} name="Home" />
+            <Drawer.Screen component={CreatedAt} name="Details" />
             <Drawer.Screen component={LoginActivity} name="Login Activity" />
         </Drawer.Navigator>
     );

@@ -7,13 +7,12 @@ import LoginProvider from "./app/context/LoginProvider";
 const theme = {
     ...DefaultTheme,
     colors: { ...DefaultTheme.colors, background: "#fff" },
-}
+};
 export default function App() {
     return (
         <LoginProvider>
             <NavigationContainer theme={theme}>
                 <MainNavigator />
-                {/* <AuthNavigation /> */}
             </NavigationContainer>
         </LoginProvider>
     );

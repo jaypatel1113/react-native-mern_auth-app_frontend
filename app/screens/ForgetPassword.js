@@ -1,10 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState } from "react";
-import FormContainer from "./FormContainer";
-import FormInput from "./FormInput";
-import FormSubmitButton from "./FormSubmitButton";
-import BottomLinks from "./BottomLinks";
-import Heading from "./Heading";
+
 import {
     isValidEmail,
     isValidObjField,
@@ -12,18 +8,23 @@ import {
     navigateToRegister,
     updateError,
 } from "../utils/methods";
-import AppForm from "./AppForm";
-import AppNotification from "./AppNotification";
-import client from "../api/client";
 import { forgetpass } from "../utils/auth";
 import { useLogin } from "../context/LoginProvider";
 
+import FormContainer from "../components/FormContainer";
+import FormInput from "../components/FormInput";
+import FormSubmitButton from "../components/FormSubmitButton";
+import BottomLinks from "../components/BottomLinks";
+import Heading from "../components/Heading";
+import AppForm from "../components/AppForm";
+import AppNotification from "../components/AppNotification";
+
 const ForgetPassword = ({ navigation }) => {
-    const [type, setType] = useState('');
-    const [text, setText] = useState('');
-    const { setLoading } = useLogin()
+    const [type, setType] = useState("");
+    const [text, setText] = useState("");
+    const { setLoading } = useLogin();
     const [userInfo, setUserInfo] = useState({
-        email: ""
+        email: "",
     });
     const handleOnChangeText = (value, fieldName) => {
         setUserInfo({ ...userInfo, [fieldName]: value });
@@ -35,7 +36,6 @@ const ForgetPassword = ({ navigation }) => {
         if (!isValidEmail(userInfo.email))
             return updateError("Invalid Email!", setText, "error", setType);
 
-
         return true;
     };
 
@@ -43,22 +43,22 @@ const ForgetPassword = ({ navigation }) => {
         if (isValidForm()) {
             try {
                 setLoading(true);
-                const res = await forgetpass(userInfo)
+                const res = await forgetpass(userInfo);
 
                 // console.log(res);
-                if(!res.success){
+                if (!res.success) {
                     setLoading(false);
                     return updateError(res.message, setText, "error", setType);
-                } 
-                
+                }
+
                 if (res.success) {
                     setUserInfo({ email: "" });
                     updateError(res.message, setText, "success", setType);
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         navigateToLogin(navigation);
-                    }, 2500)
+                    }, 2500);
                 }
-                
+
                 setLoading(false);
                 // console.log(res);
             } catch (error) {

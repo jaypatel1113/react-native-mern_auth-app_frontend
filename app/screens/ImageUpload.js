@@ -3,13 +3,13 @@ import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { StackActions } from "@react-navigation/native";
 
-import client from "../api/client";
 import { useLogin } from "../context/LoginProvider";
 
+import client from "../api/client";
+
 const ImageUpload = (props) => {
-    const { setIsLoggedIn, profile, setLoading } = useLogin();
+    const { setIsLoggedIn, setLoading } = useLogin();
     const [profileImage, setProfileImage] = useState("");
-    const [progress, setProgress] = useState(0);
     const { token } = props.route.params;
 
     const openImageLibrary = async () => {
@@ -35,9 +35,9 @@ const ImageUpload = (props) => {
     const dispatchHome = () => {
         setIsLoggedIn(true);
         setLoading(false);
-        
+
         props.navigation.dispatch(StackActions.replace("UserProfile"));
-    }
+    };
 
     const uploadProfileImage = async () => {
         const formData = new FormData();

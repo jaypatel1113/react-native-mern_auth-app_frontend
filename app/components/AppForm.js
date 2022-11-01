@@ -3,30 +3,20 @@ import { StyleSheet, View } from "react-native";
 
 import FormHeader from "./FormHeader";
 
-export default function AppForm() {
+const AppForm = ({ login }) => {
     return (
         <View style={{ paddingTop: 120 }}>
             <View style={{ height: 80 }}>
                 <FormHeader
-                    leftHeading="Welcome "
-                    rightHeading="Back"
+                    leftHeading="Welcome"
+                    rightHeading={login ? null : " Back"}
                     subHeading="Task Manager"
                 />
             </View>
-
-            {/* <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-            >
-                <LoginForm navigation={navigation} />
-                <ScrollView>
-                    <SignupForm navigation={navigation} />
-                </ScrollView>
-                <ForgetPassword navigation={navigation} />
-            </ScrollView> */}
         </View>
     );
 }
 
 const styles = StyleSheet.create({});
+
+export default AppForm;

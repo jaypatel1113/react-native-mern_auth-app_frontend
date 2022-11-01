@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import client from "../api/client";
+import { View, StyleSheet } from "react-native";
+import { StackActions } from "@react-navigation/native";
+
 import {
     isValidEmail,
     isValidObjField,
@@ -8,28 +9,28 @@ import {
     navigateToLogin,
     updateError,
 } from "../utils/methods";
-import { StackActions } from "@react-navigation/native";
-import AppForm from "./AppForm";
-import BottomLinks from "./BottomLinks";
-import FormContainer from "./FormContainer";
-import FormInput from "./FormInput";
-import FormSubmitButton from "./FormSubmitButton";
-import Heading from "./Heading";
 import { signInWithAsync, signup } from "../utils/auth";
-import AppNotification from "./AppNotification";
 import { useLogin } from "../context/LoginProvider";
+
+import AppForm from "../components/AppForm";
+import FormContainer from "../components/FormContainer";
+import Heading from "../components/Heading";
+import FormInput from "../components/FormInput";
+import AppNotification from "../components/AppNotification";
+import FormSubmitButton from "../components/FormSubmitButton";
+import BottomLinks from "../components/BottomLinks";
 
 const SignupForm = ({ navigation }) => {
     const [userInfo, setUserInfo] = useState({
-        fullname: "jay patel",
-        email: "jay734883@gmail.com",
-        password: "12345678",
-        confirmPassword: "12345678",
+        fullname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     });
 
-    const [type, setType] = useState('');
-    const [text, setText] = useState('');
-    const {setLoading} = useLogin();
+    const [type, setType] = useState("");
+    const [text, setText] = useState("");
+    const { setLoading } = useLogin();
     // const [msg, setMsg] = useState({type: '', text: ''});
 
     const { fullname, email, password, confirmPassword } = userInfo;
@@ -50,10 +51,20 @@ const SignupForm = ({ navigation }) => {
             return updateError("Invalid email!", setText, "error", setType);
         // password must have 8 or more characters
         if (!password.trim() || password.length < 8)
-            return updateError("Password is less then 8 characters!", setText, "error", setType);
+            return updateError(
+                "Password is less then 8 characters!",
+                setText,
+                "error",
+                setType
+            );
         // password and confirm password must be the same
         if (password !== confirmPassword)
-            return updateError("Password does not match!", setText, "error", setType);
+            return updateError(
+                "Password does not match!",
+                setText,
+                "error",
+                setType
+            );
 
         return true;
     };
@@ -63,29 +74,31 @@ const SignupForm = ({ navigation }) => {
             setLoading(true);
             // submit form
             const result = await signup(userInfo);
-            if(!result.success) {
+            if (!result.success) {
                 setLoading(false);
                 return updateError(result.message, setText, "error", setType);
             }
             // if(!result.success) return setMsg({type: 'error', text: result.message})
-            
+
             if (result.success) {
                 setLoading(true);
-                const signInRes = await signInWithAsync(userInfo.email, userInfo.password)
+                const signInRes = await signInWithAsync(
+                    userInfo.email,
+                    userInfo.password
+                );
                 if (signInRes.success) {
                     setLoading(false);
                     navigation.dispatch(
-                        // StackActions.replace("ImageUpload", {
-                            //     token: signInRes.data.token,
-                            // })
-                            StackActions.replace("Verification", {profile: result.newUser})
-                            );
-                        }
-                    }
+                        StackActions.replace("Verification", {
+                            profile: result.newUser,
+                        })
+                    );
                 }
-                setLoading(false);
-            };
-            return (
+            }
+        }
+        setLoading(false);
+    };
+    return (
         <>
             <AppForm />
             <FormContainer>
@@ -116,7 +129,7 @@ const SignupForm = ({ navigation }) => {
                         handleOnChangeText(value, "fullname")
                     }
                     label="Full Name"
-                    placeholder="John Doew"
+                    placeholder="John Doe"
                     autoCapitalize="none"
                 />
                 <FormInput
@@ -141,7 +154,7 @@ const SignupForm = ({ navigation }) => {
                     onChangeText={(value) =>
                         handleOnChangeText(value, "confirmPassword")
                     }
-                    label="Password"
+                    label="Confirm Password"
                     placeholder="********"
                     autoCapitalize="none"
                     secureTextEntry

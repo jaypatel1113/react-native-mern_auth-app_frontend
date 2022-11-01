@@ -1,7 +1,9 @@
 import React from "react";
-import { View, StyleSheet, Text, FlatList, Dimensions } from "react-native";
+import { View, StyleSheet, Text, FlatList } from "react-native";
+
 import { useLogin } from "../context/LoginProvider";
-import Item from "./Item";
+
+import Item from "../components/Item";
 
 const LoginActivity = () => {
     const { profile, isLoggedIn } = useLogin();
@@ -10,8 +12,7 @@ const LoginActivity = () => {
 
     const renderItem = ({ item }) => <Item time={item.signedAt} />;
 
-    return (
-        isLoggedIn ?
+    return isLoggedIn ? (
         <View style={styles.container}>
             <Text style={styles.heading}>
                 Currently Logged in: {isLoggedIn ? profile?.tokens?.length : 0} Devices
@@ -21,8 +22,8 @@ const LoginActivity = () => {
                 renderItem={renderItem}
                 keyExtractor={(item) => item.token}
             />
-        </View> : null
-    );
+        </View>
+    ) : null;
 };
 
 const styles = StyleSheet.create({

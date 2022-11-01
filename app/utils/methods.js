@@ -1,12 +1,10 @@
-import { useLogin } from "../context/LoginProvider";
-
 export const isValidObjField = (obj) => {
     return Object.values(obj).every((value) => value.trim());
 };
 
-export const updateError = (msg, stateUpdater, errorType, errorUpdater, setIsLoggedIn ) => {
+export const updateError = (msg, stateUpdater, errorType, errorUpdater) => {
     stateUpdater(msg);
-    errorUpdater(errorType)
+    errorUpdater(errorType);
     setTimeout(() => {
         stateUpdater("");
         errorUpdater("");
@@ -19,13 +17,13 @@ export const isValidEmail = (value) => {
 };
 
 export const navigateToLogin = (navigation) => {
-    navigation.navigate('Login');
+    navigation.navigate("Login");
 };
 
 export const navigateToRegister = (navigation) => {
-    navigation.navigate('Register');
+    navigation.navigate("Register");
 };
 
 export const navigateToForgetPassword = (navigation) => {
-    navigation.navigate('ForgetPassword');
+    navigation.navigate("ForgetPassword");
 };
