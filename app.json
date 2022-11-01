@@ -17,14 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jay734883.fullstackauthenticationapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.jay734883.fullstack-authentication-app"
+      "package": "com.jay734883.fullstackauthenticationapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
