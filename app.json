@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FullStack Authentication App",
+    "name": "Auth App",
     "slug": "fullstack-authentication-app",
     "version": "1.0.0",
     "orientation": "portrait",
