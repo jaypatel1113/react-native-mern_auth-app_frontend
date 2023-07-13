@@ -8,6 +8,7 @@ const theme = {
     ...DefaultTheme,
     colors: { ...DefaultTheme.colors, background: "#fff" },
 };
+
 export default function App() {
     return (
         <LoginProvider>
