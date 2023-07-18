@@ -1,10 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import {
-    createDrawerNavigator,
-    DrawerContentScrollView,
-    DrawerItemList,
-} from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 
 import { useLogin } from "./context/LoginProvider";
 import { logout } from "./utils/auth";
